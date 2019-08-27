@@ -1,17 +1,18 @@
-package rml
+package compiler
 
-import prolog.PrologCompiler
-import rml.ast.toProlog
-import rml.parser.buildSpecificationAst
-import rml.parser.rmlLexer
-import rml.parser.rmlParser
+import compiler.prolog.PrologCompiler
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.DefaultHelpFormatter
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
+import compiler.calculus.Compiler
+import compiler.prolog.ast.Program
+import compiler.rml.ast.*
+import compiler.rml.parser.buildSpecification
 import org.antlr.v4.runtime.*
+import rml.parser.RMLLexer
+import rml.parser.RMLParser
 import java.io.*
-
 
 class Args(parser: ArgParser) {
     val input by parser.storing("input file").default<String?>(null)
@@ -39,17 +40,21 @@ fun main(args: Array<String>) {
 fun compile(inputStream: InputStream, outputStream: OutputStream) {
     try {
         val input = CharStreams.fromStream(inputStream)
-        val lexer = rmlLexer(input)
+        val lexer = RMLLexer(input)
         val tokenStream = CommonTokenStream(lexer)
-        val parser = rmlParser(tokenStream)
+        val parser = RMLParser(tokenStream)
         parser.errorHandler = object: DefaultErrorStrategy() {
             override fun recover(recognizer: Parser?, e: RecognitionException?) {
                 throw e!!
             }
         }
-        val parseTree = parser.spec()
-        val rmlAst = buildSpecificationAst(parseTree)
-        val prologAst = toProlog(rmlAst)
+        val parseTree = parser.specification()
+        val rmlAst = buildSpecification(parseTree)
+        val calculusAst = CalculusCompiler.compile(rmlAst)
+        val declarationsClauses = compile(rmlAst.eventTypeDeclarations)
+        val calculusCompiler = Compiler<EventType, DataExpression>(::compile) { de -> compile(de) }
+        val specificationClauses = calculusCompiler.compile(calculusAst, "Main")
+        val prologAst = Program(directives, declarationsClauses + specificationClauses)
         val writer = outputStream.bufferedWriter()
         PrologCompiler(writer).compile(prologAst)
         writer.close()
