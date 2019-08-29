@@ -39,7 +39,7 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
                 compile(expression.right))
         is VariableExpression -> VariableTerm(expression.identifier.name)
         is ParametricExpression -> CompoundTerm("var",
-                VariableTerm(expression.identifier.name),
+                atom(expression.identifier.name),
                 compile(expression.expression))
         is GenericExpression -> CompoundTerm("gen",
                 ListTerm(expression.variables.map { atom(it.name) }),
