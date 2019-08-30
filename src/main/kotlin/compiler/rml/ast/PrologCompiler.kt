@@ -81,7 +81,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
         // generate a match predicate for every parent event type
         is DerivedEventTypeDeclaration -> declaration.parents.map { parentEventType ->
             val parentTerm = CompoundTerm(parentEventType.identifier.name, parameters.map {
-                VariableTerm(it.variable.name)
+                VariableTerm(it.variable.name.capitalize())
             })
             CompoundTerm("match", eventVariable, parentTerm)
         }
