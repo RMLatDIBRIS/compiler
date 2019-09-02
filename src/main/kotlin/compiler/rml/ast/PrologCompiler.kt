@@ -80,9 +80,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
 
         // generate a match predicate for every parent event type
         is DerivedEventTypeDeclaration -> declaration.parents.map { parentEventType ->
-            val parentTerm = CompoundTerm(parentEventType.identifier.name, parameters.map {
-                VariableTerm(it.variable.name.capitalize())
-            })
+            val parentTerm = CompoundTerm(parentEventType.identifier.name, parentEventType.parameters.map(::compile))
             CompoundTerm("match", eventVariable, parentTerm)
         }
     }
@@ -99,6 +97,18 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
 
     // otherwise just generate one clause with all the negated predicates in the body
     return listOf(Clause(head, parentPredicates.map { CompoundTerm("not", it) } + guardPredicate))
+}
+
+private fun compile(parameter: EventType.Parameter): Term = when (parameter) {
+    is EventType.Parameter.DataExpression -> compile(parameter.dataExpression, wrapVariables = false)
+    is EventType.Parameter.EventExpression -> {
+        // no patterns expected here
+        val result = compile(parameter.eventExpression).toList()
+        if (result.size > 1)
+            throw Exception("unexpected event pattern in parameter")
+        result.single()
+    }
+    is EventType.Parameter.Variable -> VariableTerm(parameter.variable.name.capitalize())
 }
 
 private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence {
