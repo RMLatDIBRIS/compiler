@@ -23,7 +23,7 @@ evtypeParam: evtypeVar # evtypeVarParam
 // basically JSON objects with '|'
 eventExp: eventExp ('|' eventExp) # patternEventExp
         | '{' (field (',' field)*)? '}' # objectEventExp
-        | '[' (eventExp (',' eventExp)*)? (',' ELLIPSIS)? ']' # listEventExp
+        | '[' (ELLIPSIS | eventExp (',' eventExp)* (',' ELLIPSIS)?)? ']' # listEventExp
         | '(' eventExp ')' # parenEventExp
         | STRING # stringEventExp
         | INT # intEventExp
