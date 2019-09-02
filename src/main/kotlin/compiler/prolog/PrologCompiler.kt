@@ -50,8 +50,15 @@ class PrologCompiler(private val writer: BufferedWriter) {
 
     private fun compileList(listTerm: ListTerm) {
         writer.write("[")
-        intersperse(listTerm.list)
-        if (listTerm.moreAllowed) writer.write("|_")
+
+        // if there is only the ellipsis handle it in a special way
+        if (listTerm.list.isEmpty() && listTerm.moreAllowed)
+            writer.write("_|_")
+        else {
+            intersperse(listTerm.list)
+            if (listTerm.moreAllowed) writer.write("|_")
+        }
+
         writer.write("]")
     }
 

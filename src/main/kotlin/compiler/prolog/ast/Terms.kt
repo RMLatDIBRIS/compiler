@@ -42,11 +42,6 @@ data class DictionaryTerm(val tag: Term, val pairs: List<KeyValuePair>): Term() 
 // handle lists in a special way
 data class ListTerm(val list: List<Term> = emptyList(), val moreAllowed: Boolean = false): Term() {
     constructor(vararg terms: Term, moreAllowed: Boolean = false): this(terms.toList(), moreAllowed)
-
-    init {
-        if (list.isEmpty() && moreAllowed)
-            error("unbound tail not allowed without head elements")
-    }
 }
 
 // SWI-Prolog v7 strings

@@ -56,8 +56,8 @@ object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
     override fun visitObjectEventExp(ctx: ObjectEventExpContext?) =
             ObjectEventExpression(ctx!!.field().map { buildField(it) })
 
-    override fun visitListEventExp(ctx: ListEventExpContext?) =
-            ListEventExpression(ctx!!.eventExp().map { it.accept(this) }, ctx.ELLIPSIS() != null)
+    override fun visitListEventExpr(ctx: ListEventExprContext?): ListEventExpression =
+            ctx!!.accept(ListEventExpressionBuilder)
 
     override fun visitParenEventExp(ctx: ParenEventExpContext?): EventExpression = ctx!!.eventExp().accept(this)
 
@@ -77,6 +77,19 @@ object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
             VariableEventExpression(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
     override fun visitIgnoredEventExp(ctx: IgnoredEventExpContext?) = IgnoredEventExpression
+}
+
+object ListEventExpressionBuilder: RMLBaseVisitor<ListEventExpression>() {
+    override fun visitEmptyList(ctx: EmptyListContext?) =
+            ListEventExpression(emptyList(), moreAllowed = false)
+
+    override fun visitEllipsisList(ctx: EllipsisListContext?) =
+            ListEventExpression(emptyList(), moreAllowed = true)
+
+    override fun visitNonEmptyList(ctx: NonEmptyListContext?): ListEventExpression {
+        val elements: List<EventExpression> = ctx!!.eventExp().map { it.accept(EventExpressionBuilder) }
+        return ListEventExpression(elements, moreAllowed = ctx.ELLIPSIS() != null)
+    }
 }
 
 object ExpressionBuilder: RMLBaseVisitor<Expression>() {

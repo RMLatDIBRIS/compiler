@@ -6,11 +6,7 @@ sealed class EventExpression
 object IgnoredEventExpression: EventExpression()
 data class PatternEventExpression(val left: EventExpression, val right: EventExpression): EventExpression()
 // moreAllowed is true if ellipsis at the end are used
-data class ListEventExpression(val list: List<EventExpression>, val moreAllowed: Boolean): EventExpression() {
-    init {
-        require(list.isNotEmpty() || !moreAllowed) { "list with only unbound elements not supported" }
-    }
-}
+data class ListEventExpression(val list: List<EventExpression>, val moreAllowed: Boolean): EventExpression()
 data class StringEventExpression(val string: String): EventExpression()
 data class IntEventExpression(val number: Int): EventExpression()
 data class FloatEventExpression(val number: Double): EventExpression()
