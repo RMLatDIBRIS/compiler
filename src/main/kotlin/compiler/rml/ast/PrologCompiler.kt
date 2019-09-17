@@ -42,6 +42,7 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
     is VariableDataExpression ->
         if (wrapVariables) CompoundTerm("var", atom(dataExpression.variable.name))
         else VariableTerm(dataExpression.variable.name.capitalize())
+    is MinusDataExpression -> CompoundTerm("-", compile(dataExpression.exp, wrapVariables))
     is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is MulDataExpression -> CompoundTerm("*", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))

@@ -12,6 +12,9 @@ data class VariableDataExpression(val variable: Identifier): DataExpression() {
     constructor(variable: String): this(Identifier(variable))
 }
 
+// arithmetic unary expressions
+data class MinusDataExpression(val exp: DataExpression): DataExpression()
+
 // arithmetic binary expressions
 data class SumDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
 data class SubDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()

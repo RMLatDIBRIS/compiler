@@ -66,10 +66,11 @@ dataExp: BOOLEAN # boolDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
+       | '-' dataExp # minusDataExp
+       | dataExp '*' dataExp # mulDataExp
+       | dataExp '/' dataExp # divDataExp
        | dataExp '+' dataExp # sumDataExp
        | dataExp '-' dataExp # subDataExp
-       | dataExp '+' dataExp # mulDataExp
-       | dataExp '-' dataExp # divDataExp
        | dataExp '<' dataExp # lessThanDataExp
        | dataExp '<=' dataExp # lessThanEqualToDataExp
        | dataExp '>' dataExp # greaterThanDataExp
@@ -77,6 +78,7 @@ dataExp: BOOLEAN # boolDataExp
        | dataExp '==' dataExp # equalToDataExp
        | dataExp '&&' dataExp # andDataExp
        | dataExp '||' dataExp # orDataExp
+       | '(' dataExp ')' # parenDataExp
        ;
 
 // identifier classes (don't make them lexical, they will get priority over each other)

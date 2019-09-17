@@ -169,6 +169,12 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
     override fun visitVarDataExp(ctx: VarDataExpContext?) =
             VariableDataExpression(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
+    override fun visitMinusDataExp(ctx: MinusDataExpContext?) =
+            MinusDataExpression(ctx!!.dataExp().accept(this))
+
+    override fun visitParenDataExp(ctx: ParenDataExpContext?) =
+    	     ctx!!.dataExp().accept(this)
+
     override fun visitSumDataExp(ctx: SumDataExpContext?) =
             SumDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
