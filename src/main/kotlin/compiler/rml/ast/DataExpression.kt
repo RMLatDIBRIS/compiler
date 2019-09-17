@@ -15,6 +15,8 @@ data class VariableDataExpression(val variable: Identifier): DataExpression() {
 // arithmetic binary expressions
 data class SumDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
 data class SubDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+data class MulDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+data class DivDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
 
 // relational binary expressions
 data class LessThanDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()

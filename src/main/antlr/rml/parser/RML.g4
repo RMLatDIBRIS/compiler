@@ -68,6 +68,8 @@ dataExp: BOOLEAN # boolDataExp
        | evtypeVar # varDataExp
        | dataExp '+' dataExp # sumDataExp
        | dataExp '-' dataExp # subDataExp
+       | dataExp '+' dataExp # mulDataExp
+       | dataExp '-' dataExp # divDataExp
        | dataExp '<' dataExp # lessThanDataExp
        | dataExp '<=' dataExp # lessThanEqualToDataExp
        | dataExp '>' dataExp # greaterThanDataExp

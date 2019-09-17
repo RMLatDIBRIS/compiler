@@ -44,6 +44,8 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
         else VariableTerm(dataExpression.variable.name.capitalize())
     is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is MulDataExpression -> CompoundTerm("*", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is DivDataExpression -> CompoundTerm("/", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is LessThanDataExpression -> CompoundTerm("<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is LessThanEqualDataExpression -> CompoundTerm("=<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is GreaterThanDataExpression -> CompoundTerm(">", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
