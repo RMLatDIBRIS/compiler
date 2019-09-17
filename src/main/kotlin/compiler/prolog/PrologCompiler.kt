@@ -18,6 +18,11 @@ class PrologCompiler(private val writer: BufferedWriter) {
             intersperse(term.pairs, PrologCompiler::compile, "{", "}")
         }
         is ListTerm -> compileList(term)
+	is ConstraintTerm -> {
+	   writer.write("{")
+           compile(term.term)
+	   writer.write("}")
+       }
     }
 
     private fun compile(pair: DictionaryTerm.KeyValuePair) {

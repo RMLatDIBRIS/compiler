@@ -10,7 +10,10 @@ val directives: List<Directive> = listOf(
         ))),
 
         // :- use_module(monitor('deep_subdict')).
-        Directive(CompoundTerm("use_module", CompoundTerm("monitor", atom("deep_subdict"))))
+        Directive(CompoundTerm("use_module", CompoundTerm("monitor", atom("deep_subdict")))),
+
+        // :- use_module(library('clpr')).
+        Directive(CompoundTerm("use_module", CompoundTerm("library", atom("clpr"))))
 )
 
 // event type declarations are directly compiled to Prolog
@@ -89,17 +92,17 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     }
 
     // with data expression
-    val guardPredicate: List<Term> =
+    val guardPredicate: ConstraintTerm? = 
             if (declaration.withDataExpression != null)
-                listOf(compile(declaration.withDataExpression!!, wrapVariables = false))
-            else emptyList()
+                ConstraintTerm(compile(declaration.withDataExpression!!, wrapVariables = false)) 
+            else null
 
     // if not negated, just generate a clause for every predicate
     if (!declaration.negated)
-        return parentPredicates.map { Clause(head, listOf(it) + guardPredicate) }
+        return parentPredicates.map { Clause(head, listOf(it) + listOfNotNull(guardPredicate)) }
 
     // otherwise just generate one clause with all the negated predicates in the body
-    return listOf(Clause(head, parentPredicates.map { CompoundTerm("not", it) } + guardPredicate))
+    return listOf(Clause(head, parentPredicates.map { CompoundTerm("not", it) } + listOfNotNull(guardPredicate)))
 }
 
 private fun compile(parameter: EventType.Parameter): Term = when (parameter) {

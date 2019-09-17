@@ -47,9 +47,13 @@ data class ListTerm(val list: List<Term> = emptyList(), val moreAllowed: Boolean
 // SWI-Prolog v7 strings
 data class StringTerm(val string: String): Term()
 
+// SWI-Prolog constraints clpr
+data class ConstraintTerm(val term: Term): Term() 
+
 data class Identifier(val string: String) {
     init {
         require(string.isNotBlank()) { "blank identifier not allowed" }
         require(StandardCharsets.US_ASCII.newEncoder().canEncode(string)) { "ASCII string expected" }
     }
+
 }

@@ -182,10 +182,10 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
             SubDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitMulDataExp(ctx: MulDataExpContext?) =
-            SumDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+            MulDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitDivDataExp(ctx: DivDataExpContext?) =
-            SubDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+            DivDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitLessThanDataExp(ctx: LessThanDataExpContext?) =
             LessThanDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
@@ -198,6 +198,9 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
 
     override fun visitGreaterThanEqualToDataExp(ctx: GreaterThanEqualToDataExpContext?) =
             GreaterThanEqualDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitEqualToDataExp(ctx: EqualToDataExpContext?) =
+            EqualToDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitAndDataExp(ctx: AndDataExpContext?) =
             AndDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
