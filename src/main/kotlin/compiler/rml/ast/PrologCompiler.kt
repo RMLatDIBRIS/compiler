@@ -46,6 +46,7 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
         if (wrapVariables) CompoundTerm("var", atom(dataExpression.variable.name))
         else VariableTerm(dataExpression.variable.name.capitalize())
     is MinusDataExpression -> CompoundTerm("-", compile(dataExpression.exp, wrapVariables))
+    is AbsDataExpression -> CompoundTerm("abs", compile(dataExpression.exp, wrapVariables))
     is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is MulDataExpression -> CompoundTerm("*", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
@@ -55,6 +56,7 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
     is GreaterThanDataExpression -> CompoundTerm(">", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is GreaterThanEqualDataExpression -> CompoundTerm(">=", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is EqualToDataExpression -> CompoundTerm("=:=", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is NotEqualToDataExpression -> CompoundTerm("=\\=", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is AndDataExpression -> CompoundTerm(",", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is OrDataExpression -> CompoundTerm(";", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
 }

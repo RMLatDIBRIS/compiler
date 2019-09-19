@@ -66,6 +66,7 @@ dataExp: BOOLEAN # boolDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
+       | 'abs' '(' dataExp ')' # absDataExp
        | '-' dataExp # minusDataExp
        | dataExp '*' dataExp # mulDataExp
        | dataExp '/' dataExp # divDataExp
@@ -76,6 +77,7 @@ dataExp: BOOLEAN # boolDataExp
        | dataExp '>' dataExp # greaterThanDataExp
        | dataExp '>=' dataExp # greaterThanEqualToDataExp
        | dataExp '==' dataExp # equalToDataExp
+       | dataExp '!=' dataExp # notEqualToDataExp
        | dataExp '&&' dataExp # andDataExp
        | dataExp '||' dataExp # orDataExp
        | '(' dataExp ')' # parenDataExp

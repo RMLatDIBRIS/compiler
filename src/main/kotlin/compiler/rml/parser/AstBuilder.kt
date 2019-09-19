@@ -169,6 +169,9 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
     override fun visitVarDataExp(ctx: VarDataExpContext?) =
             VariableDataExpression(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
+    override fun visitAbsDataExp(ctx: AbsDataExpContext?) =
+            AbsDataExpression(ctx!!.dataExp().accept(this))
+
     override fun visitMinusDataExp(ctx: MinusDataExpContext?) =
             MinusDataExpression(ctx!!.dataExp().accept(this))
 
@@ -201,6 +204,9 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
 
     override fun visitEqualToDataExp(ctx: EqualToDataExpContext?) =
             EqualToDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitNotEqualToDataExp(ctx: NotEqualToDataExpContext?) =
+            NotEqualToDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitAndDataExp(ctx: AndDataExpContext?) =
             AndDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
