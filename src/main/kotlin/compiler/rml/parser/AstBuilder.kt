@@ -20,7 +20,15 @@ fun buildEquation(ctx: EquationContext) = Equation(
         ctx.exp().accept(ExpressionBuilder)
 )
 
-object EventTypeDeclarationBuilder: RMLBaseVisitor<EventTypeDeclaration>() {
+// this visitor throws if we accidentally forget to override one of the builder methods
+// always extend this one
+abstract class NoDefaultVisitor<T>: RMLBaseVisitor<T>() {
+    override fun defaultResult(): T {
+        throw UnsupportedOperationException("conversion from parse tree to AST not implemented for this element")
+    }
+}
+
+object EventTypeDeclarationBuilder: NoDefaultVisitor<EventTypeDeclaration>() {
     override fun visitDerivedEvtypeDecl(ctx: DerivedEvtypeDeclContext?) =
             DerivedEventTypeDeclaration(
                     buildEventType(ctx!!.evtype(0)),
@@ -38,7 +46,7 @@ object EventTypeDeclarationBuilder: RMLBaseVisitor<EventTypeDeclaration>() {
             )
 }
 
-object EventTypeParameterBuilder: RMLBaseVisitor<EventType.Parameter>() {
+object EventTypeParameterBuilder: NoDefaultVisitor<EventType.Parameter>() {
     override fun visitEvtypeVarParam(ctx: EvtypeVarParamContext?) =
             EventType.Parameter.Variable(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
@@ -49,7 +57,7 @@ object EventTypeParameterBuilder: RMLBaseVisitor<EventType.Parameter>() {
             EventType.Parameter.DataExpression(ctx!!.dataExp().accept(DataExpressionBuilder))
 }
 
-object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
+object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
     override fun visitPatternEventExp(ctx: PatternEventExpContext?) =
             PatternEventExpression(ctx!!.eventExp(0).accept(this), ctx.eventExp(1).accept(this))
 
@@ -79,7 +87,7 @@ object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
     override fun visitIgnoredEventExp(ctx: IgnoredEventExpContext?) = IgnoredEventExpression
 }
 
-object ListEventExpressionBuilder: RMLBaseVisitor<ListEventExpression>() {
+object ListEventExpressionBuilder: NoDefaultVisitor<ListEventExpression>() {
     override fun visitEmptyList(ctx: EmptyListContext?) =
             ListEventExpression(emptyList(), moreAllowed = false)
 
@@ -92,7 +100,7 @@ object ListEventExpressionBuilder: RMLBaseVisitor<ListEventExpression>() {
     }
 }
 
-object ExpressionBuilder: RMLBaseVisitor<Expression>() {
+object ExpressionBuilder: NoDefaultVisitor<Expression>() {
     override fun visitStarExp(ctx: StarExpContext?) =
             StarExpression(ctx!!.exp().accept(this))
 
@@ -157,7 +165,7 @@ object ExpressionBuilder: RMLBaseVisitor<Expression>() {
     override fun visitParenExp(ctx: ParenExpContext?): Expression = ctx!!.exp().accept(this)
 }
 
-object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
+object DataExpressionBuilder: NoDefaultVisitor<DataExpression>() {
     // factorize these three functions is just not worth it
     override fun visitBoolDataExp(ctx: BoolDataExpContext?) =
             BoolDataExpression(ctx!!.BOOLEAN().text!!.toBoolean())
