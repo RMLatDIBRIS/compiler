@@ -58,6 +58,7 @@ object EventTypeParameterBuilder: NoDefaultVisitor<EventType.Parameter>() {
 }
 
 object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
+
     override fun visitPatternEventExp(ctx: PatternEventExpContext?) =
             PatternEventExpression(ctx!!.eventExp(0).accept(this), ctx.eventExp(1).accept(this))
 
@@ -65,7 +66,7 @@ object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
             ObjectEventExpression(ctx!!.field().map { buildField(it) })
 
     override fun visitListEventExpr(ctx: ListEventExprContext?): ListEventExpression =
-            ctx!!.accept(ListEventExpressionBuilder)
+            ctx!!.listEventExp().accept(ListEventExpressionBuilder)
 
     override fun visitParenEventExp(ctx: ParenEventExpContext?): EventExpression = ctx!!.eventExp().accept(this)
 
