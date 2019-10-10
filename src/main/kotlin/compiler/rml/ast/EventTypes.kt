@@ -33,4 +33,6 @@ data class EventType(val identifier: Identifier, val parameters: List<Parameter>
 
     // allow construction from String directly
     constructor(name: String, parameters: List<Parameter>): this(Identifier(name), parameters)
+    // also without parameters
+    constructor(name: String): this(name, emptyList())
 }

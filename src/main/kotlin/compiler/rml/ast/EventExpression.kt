@@ -21,4 +21,7 @@ data class ObjectEventExpression(val fields: List<Field>): EventExpression() {
         // allow construction from String directly
         constructor(key: String, value: EventExpression): this(Identifier(key), value)
     }
+
+    // easy construction of empty object
+    constructor(): this(emptyList())
 }

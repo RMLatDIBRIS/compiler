@@ -8,8 +8,25 @@ import java.lang.RuntimeException
 // this file implements the conversion from the ANTLR parse tree to the RML AST
 // grammar rules with multiple productions are converted with (singleton) visitors, otherwise single functions are used
 
+// default event type declarations
+val defaultEvtypeDeclarations: List<EventTypeDeclaration> = listOf(
+        // any matches {};
+        DirectEventTypeDeclaration(
+                EventType("any"),
+                ObjectEventExpression(),
+                negated = false,
+                withDataExpression = null),
+
+        // none not matches any;
+        DerivedEventTypeDeclaration(
+                EventType("none"),
+                listOf(EventType("any")),
+                negated = true,
+                withDataExpression = null)
+)
+
 fun buildSpecification(ctx: SpecificationContext) = Specification(
-        ctx.eventTypeDeclaration().map { it.accept(EventTypeDeclarationBuilder) },
+        ctx.eventTypeDeclaration().map { it.accept(EventTypeDeclarationBuilder) } + defaultEvtypeDeclarations,
         ctx.equation().map(::buildEquation),
         Identifier("Main")
 )
