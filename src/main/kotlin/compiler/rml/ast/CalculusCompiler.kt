@@ -55,7 +55,6 @@ object CalculusCompiler {
                 compile(expression.elseExpression)
         )
         EmptyExpression -> compiler.calculus.EmptyExpression
-        NoneExpression -> ZeroExpression
         AllExpression -> OneExpression
         is BlockExpression -> // for the block work one variable at a time
             if (expression.declaredVariables.isEmpty())

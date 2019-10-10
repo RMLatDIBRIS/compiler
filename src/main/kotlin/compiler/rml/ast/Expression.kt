@@ -25,7 +25,6 @@ data class IfElseExpression(val condition: DataExpression,
 
 // constants
 object EmptyExpression: Expression()
-object NoneExpression: Expression()
 object AllExpression: Expression()
 
 // block with variables declaration

@@ -141,7 +141,6 @@ object ExpressionBuilder: NoDefaultVisitor<Expression>() {
     )
 
     override fun visitEmptyExp(ctx: EmptyExpContext?) = EmptyExpression
-    override fun visitNoneExp(ctx: NoneExpContext?) = NoneExpression
     override fun visitAllExp(ctx: AllExpContext?) = AllExpression
 
     override fun visitBlockExp(ctx: BlockExpContext?) = BlockExpression(
