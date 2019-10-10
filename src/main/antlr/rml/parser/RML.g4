@@ -52,7 +52,6 @@ exp: exp '*' # starExp
    | exp '|' exp # shufExp
    | evtype '>>' exp (':' exp)? # filterExp
    | 'empty' # emptyExp
-   | 'none' # noneExp
    | 'all' # allExp
    | '{' ('var'|'let') evtypeVar (',' evtypeVar)* ';' exp '}' # blockExp
    | 'if' '(' dataExp ')' exp 'else' exp # ifElseExp
