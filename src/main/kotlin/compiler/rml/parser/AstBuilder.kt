@@ -52,7 +52,7 @@ object EventTypeDeclarationBuilder: NoDefaultVisitor<EventTypeDeclaration>() {
                     buildEventType(ctx.declared),
                     ctx.parents.map(::buildEventType),
                     ctx.NOT() != null,
-                    ctx.dataExp().accept(DataExpressionBuilder)
+                    ctx.dataExp()?.accept(DataExpressionBuilder)
             )
 
     override fun visitDirectEvtypeDecl(ctx: DirectEvtypeDeclContext) =
@@ -60,7 +60,7 @@ object EventTypeDeclarationBuilder: NoDefaultVisitor<EventTypeDeclaration>() {
                     buildEventType(ctx.evtype()),
                     ctx.eventExp().accept(EventExpressionBuilder),
                     ctx.NOT() != null,
-                    ctx.dataExp().accept(DataExpressionBuilder)
+                    ctx.dataExp()?.accept(DataExpressionBuilder)
             )
 }
 
