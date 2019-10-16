@@ -8,7 +8,7 @@ grammar RML;
 specification: eventTypeDeclaration* equation+ ;
 
 // either derive an event type from existing ones or define a eventExpression for JSON events
-eventTypeDeclaration: evtype NOT? 'matches' evtype ('|' evtype)* ('with' dataExp)? ';' # derivedEvtypeDecl
+eventTypeDeclaration: declared=evtype NOT? 'matches' parents+=evtype ('|' parents+=evtype)* ('with' dataExp)? ';' # derivedEvtypeDecl
                     | evtype NOT? 'matches' eventExp ('with' dataExp)? ';' # directEvtypeDecl
                     ;
 
@@ -42,6 +42,7 @@ listEventExp: '[' ']' # emptyList
 equation: expId ('<' expVar (',' expVar)* '>')? '=' exp ';' ;
 
 // specification expression
+// can't factorize unary and binary expressions easily because mutual left-recursion is not supported
 exp: exp '*' # starExp
    | exp '+' # plusExp
    | exp '?' # optionalExp
@@ -50,7 +51,7 @@ exp: exp '*' # starExp
    | exp '/\\' exp # andExp
    | exp '\\/' exp # orExp
    | exp '|' exp # shufExp
-   | evtype '>>' exp (':' exp)? # filterExp
+   | evtype '>>' leftBranch=exp (':' rightBranch=exp)? # filterExp
    | 'empty' # emptyExp
    | 'all' # allExp
    | '{' ('var'|'let') evtypeVar (',' evtypeVar)* ';' exp '}' # blockExp

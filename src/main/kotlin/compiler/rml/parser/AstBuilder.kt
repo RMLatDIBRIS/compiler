@@ -2,6 +2,7 @@ package compiler.rml.parser
 
 import compiler.rml.ast.*
 import rml.parser.RMLBaseVisitor
+import rml.parser.RMLParser
 import rml.parser.RMLParser.*
 import java.lang.RuntimeException
 
@@ -48,8 +49,8 @@ abstract class NoDefaultVisitor<T>: RMLBaseVisitor<T>() {
 object EventTypeDeclarationBuilder: NoDefaultVisitor<EventTypeDeclaration>() {
     override fun visitDerivedEvtypeDecl(ctx: DerivedEvtypeDeclContext) =
             DerivedEventTypeDeclaration(
-                    buildEventType(ctx.evtype(0)),
-                    ctx.evtype().drop(1).map(::buildEventType),
+                    buildEventType(ctx.declared),
+                    ctx.parents.map(::buildEventType),
                     ctx.NOT() != null,
                     ctx.dataExp().accept(DataExpressionBuilder)
             )
@@ -75,12 +76,11 @@ object EventTypeParameterBuilder: NoDefaultVisitor<EventType.Parameter>() {
 }
 
 object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
-
     override fun visitPatternEventExp(ctx: PatternEventExpContext) =
             PatternEventExpression(ctx.eventExp(0).accept(this), ctx.eventExp(1).accept(this))
 
     override fun visitObjectEventExp(ctx: ObjectEventExpContext) =
-            ObjectEventExpression(ctx.field().map { buildField(it) })
+            ObjectEventExpression(ctx.field().map(::buildField))
 
     override fun visitListEventExpr(ctx: ListEventExprContext): ListEventExpression =
             ctx.listEventExp().accept(ListEventExpressionBuilder)
@@ -97,6 +97,7 @@ object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
             FloatEventExpression(ctx.FLOAT().text.toDouble())
 
     override fun visitBoolEventExp(ctx: BoolEventExpContext) =
+            // non-null assertion needed to avoid warnings with nullable extension receiver
             BoolEventExpression(ctx.BOOLEAN().text!!.toBoolean())
 
     override fun visitVarEventExp(ctx: VarEventExpContext) =
@@ -153,8 +154,8 @@ object ExpressionBuilder: NoDefaultVisitor<Expression>() {
 
     override fun visitFilterExp(ctx: FilterExpContext) = FilterExpression(
             buildEventType(ctx.evtype()),
-            ctx.exp(0).accept(this),
-            if (ctx.exp().size > 1) ctx.exp(1).accept(this) else null
+            ctx.leftBranch.accept(this),
+            ctx.rightBranch?.accept(this)
     )
 
     override fun visitEmptyExp(ctx: EmptyExpContext) = EmptyExpression
