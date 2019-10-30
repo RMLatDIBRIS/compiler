@@ -66,6 +66,12 @@ dataExp: BOOLEAN # boolDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
        | 'abs' '(' dataExp ')' # absDataExp
+       | 'sin' '(' dataExp ')' # sinDataExp
+       | 'cos' '(' dataExp ')' # cosDataExp
+       | 'tan' '(' dataExp ')' # tanDataExp
+       | 'min' '(' dataExp ',' dataExp ')' # minDataExp
+       | 'max' '(' dataExp ',' dataExp ')' # maxDataExp
+       | dataExp '^' dataExp # expDataExp
        | '-' dataExp # minusDataExp
        | dataExp '*' dataExp # mulDataExp
        | dataExp '/' dataExp # divDataExp
