@@ -47,10 +47,18 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
         else VariableTerm(dataExpression.variable.name.capitalize())
     is MinusDataExpression -> CompoundTerm("-", compile(dataExpression.exp, wrapVariables))
     is AbsDataExpression -> CompoundTerm("abs", compile(dataExpression.exp, wrapVariables))
+
+    is SinDataExpression -> CompoundTerm("sin", compile(dataExpression.exp, wrapVariables))
+    is CosDataExpression -> CompoundTerm("cos", compile(dataExpression.exp, wrapVariables))
+    is TanDataExpression -> CompoundTerm("tan", compile(dataExpression.exp, wrapVariables))
+
     is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is MulDataExpression -> CompoundTerm("*", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is DivDataExpression -> CompoundTerm("/", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is ExpDataExpression -> CompoundTerm("^", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is MaxDataExpression -> CompoundTerm("max", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is MinDataExpression -> CompoundTerm("min", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is LessThanDataExpression -> CompoundTerm("<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is LessThanEqualDataExpression -> CompoundTerm("=<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
     is GreaterThanDataExpression -> CompoundTerm(">", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))

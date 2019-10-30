@@ -21,6 +21,17 @@ data class SumDataExpression(val left: DataExpression, val right: DataExpression
 data class SubDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
 data class MulDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
 data class DivDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+data class ExpDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+
+// trigonometric unary expressions
+data class SinDataExpression(val exp: DataExpression): DataExpression()
+data class CosDataExpression(val exp: DataExpression): DataExpression()
+data class TanDataExpression(val exp: DataExpression): DataExpression()
+
+// max and min
+data class MinDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+data class MaxDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
+
 
 // relational binary expressions
 data class LessThanDataExpression(val left: DataExpression, val right: DataExpression): DataExpression()
