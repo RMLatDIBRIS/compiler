@@ -202,11 +202,29 @@ object DataExpressionBuilder: NoDefaultVisitor<DataExpression>() {
     override fun visitMinusDataExp(ctx: MinusDataExpContext) =
             MinusDataExpression(ctx.dataExp().accept(this))
 
-    override fun visitParenDataExp(ctx: ParenDataExpContext) =
-    	     ctx.dataExp().accept(this)
+    override fun visitParenDataExp(ctx: ParenDataExpContext?) =
+            ctx!!.dataExp().accept(this)
 
-    override fun visitSumDataExp(ctx: SumDataExpContext) =
-            SumDataExpression(ctx.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+    override fun visitSinDataExp(ctx: SinDataExpContext?) =
+            SinDataExpression(ctx!!.dataExp().accept(this))
+
+    override fun visitCosDataExp(ctx: CosDataExpContext?) =
+            CosDataExpression(ctx!!.dataExp().accept(this))
+
+    override fun visitTanDataExp(ctx: TanDataExpContext?) =
+            TanDataExpression(ctx!!.dataExp().accept(this))
+
+    override fun visitMaxDataExp(ctx: MaxDataExpContext?) =
+            MaxDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitMinDataExp(ctx: MinDataExpContext?) =
+            MinDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitExpDataExp(ctx: ExpDataExpContext?) =
+            ExpDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitSumDataExp(ctx: SumDataExpContext?) =
+            SumDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 
     override fun visitSubDataExp(ctx: SubDataExpContext) =
             SubDataExpression(ctx.dataExp(0).accept(this), ctx.dataExp(1).accept(this))

@@ -19,3 +19,6 @@ hs_err_pid*
 
 # generated files
 src/main/gen/*
+
+# idea
+.idea
