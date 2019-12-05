@@ -46,8 +46,15 @@ class PrologCompiler(private val writer: BufferedWriter) {
         else if (term.args.size == 2 && !term.functor.first().isLetter()) {
             // use parentheses to avoid precedence problems
             intersperse(term.args, prefix = "(", suffix = ")", separator = term.functor)
-        } else {
-            // otherwise use function notation
+        }
+        // if functor is unary and not a word, print as prefix
+        else if (term.args.size == 1 && !term.functor.first().isLetter()) {
+            // add parentheses around the expression, the operator may end up close to another operator (x>=-2)
+            writer.write("(")
+            writer.write(term.functor)
+            compile(term.args[0])
+            writer.write(")")
+        } else { // otherwise use function notation
             writer.write(term.functor)
             intersperse(term.args, "(", ")")
         }
