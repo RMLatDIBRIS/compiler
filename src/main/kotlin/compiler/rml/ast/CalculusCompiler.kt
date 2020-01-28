@@ -10,6 +10,9 @@ object CalculusCompiler {
     // intermediate results of compilation
     private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
+    // immutable list of spec definitions, useful to avoid a second parameter in functions for static checking
+    private var specDefs = listOf<compiler.rml.ast.Equation>()
+
     // returns true iff the expression denotes a set with the empty trace, computes the equivalent of E(t) in the
     // trace calculus
     // important remark: optimized version used *exclusively* to check that terms are contractive,
@@ -33,12 +36,15 @@ object CalculusCompiler {
         EmptyExpression -> true
         AllExpression -> true
         is BlockExpression -> hasEmptyTrace(expression.expression)
-        is VariableExpression -> true // to be completed!
+        is VariableExpression ->
+            hasEmptyTrace(specDefs.find{expression.id.equals(it.identifier)}?.expression?:
+            throw RuntimeException("Undefined identifier ${expression.id}"))
         is EventTypeExpression -> false
     }
 
     fun compile(specification: Specification): compiler.calculus.Specification<EventType, DataExpression> {
         assert(equations.isEmpty())
+        specDefs = specification.equations
         equations = specification.equations.map { compile(it) }.toMutableList()
         val mainIdentifier = Identifier(specification.mainIdentifier.name)
         val result = Specification(equations, mainIdentifier)
