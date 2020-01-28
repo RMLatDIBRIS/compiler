@@ -10,6 +10,33 @@ object CalculusCompiler {
     // intermediate results of compilation
     private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
+    // returns true iff the expression denotes a set with the empty trace, computes the equivalent of E(t) in the
+    // trace calculus
+    // important remark: optimized version used *exclusively* to check that terms are contractive,
+    // hence no infinite loop can ever occur and no check for non termination is needed
+    fun hasEmptyTrace(expression: Expression): Boolean = when (expression) {
+        is StarExpression -> true
+        is PlusExpression -> hasEmptyTrace(expression.exp)
+        is OptionalExpression -> true
+        is PrefixClosureExpression -> true
+        // more compact form is ConcatExpression, is AndExpression, is ShuffleExpression -> ... does not work
+        // Unresolved reference: left/right
+        is ConcatExpression -> hasEmptyTrace(expression.left) && hasEmptyTrace(expression.right)
+        is AndExpression -> hasEmptyTrace(expression.left) && hasEmptyTrace(expression.right)
+        is ShuffleExpression -> hasEmptyTrace(expression.left) && hasEmptyTrace(expression.right)
+        is OrExpression -> hasEmptyTrace(expression.left) || hasEmptyTrace(expression.right)
+        is FilterExpression ->
+            hasEmptyTrace(expression.filteredExpression) &&
+                    hasEmptyTrace(expression.unfilteredExpression ?: AllExpression)
+        is IfElseExpression -> // remark: this is an over-approximation, the check is static while E is dynamic
+            hasEmptyTrace(expression.thenExpression) && hasEmptyTrace(expression.elseExpression)
+        EmptyExpression -> true
+        AllExpression -> true
+        is BlockExpression -> hasEmptyTrace(expression.expression)
+        is VariableExpression -> true // to be completed!
+        is EventTypeExpression -> false
+    }
+
     fun compile(specification: Specification): compiler.calculus.Specification<EventType, DataExpression> {
         assert(equations.isEmpty())
         equations = specification.equations.map { compile(it) }.toMutableList()
