@@ -26,8 +26,8 @@ object CalculusCompiler {
         is ShuffleExpression -> hasEmptyTrace(expression.left) && hasEmptyTrace(expression.right)
         is OrExpression -> hasEmptyTrace(expression.left) || hasEmptyTrace(expression.right)
         is FilterExpression ->
-            hasEmptyTrace(expression.filteredExpression) &&
-                    hasEmptyTrace(expression.unfilteredExpression ?: AllExpression)
+            hasEmptyTrace(expression.filteredExpression) && (expression.unfilteredExpression==null ||
+                    hasEmptyTrace(expression.unfilteredExpression))
         is IfElseExpression -> // remark: this is an over-approximation, the check is static while E is dynamic
             hasEmptyTrace(expression.thenExpression) && hasEmptyTrace(expression.elseExpression)
         EmptyExpression -> true
