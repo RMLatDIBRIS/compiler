@@ -11,18 +11,22 @@ object CalculusCompiler {
     private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
     // immutable list of spec definitions, useful to avoid a second parameter in functions for static checking
-    // used by hasEmptyTrace and isContractive
+    // used by 'hasEmptyTrace' and 'isContractive'
     private lateinit var specDefs : List<compiler.rml.ast.Equation>
 
-    // array list used by isContractive
-    private lateinit var path : MutableList<Identifier>
+    // used for the visit implemented by 'isContractive'
+    private lateinit var path : MutableList<compiler.rml.ast.Identifier>
+
+    // returns the expression associated with variable 've' in 'specDefs'
+    private fun getExpression(ve:VariableExpression):Expression =
+    specDefs.find{ve.id.equals(it.identifier)}?.expression?: throw RuntimeException("Undefined identifier ${ve.id}")
 
     // returns true iff the expression denotes a set with the empty trace, computes the equivalent of E(t) in the
     // trace calculus, uses immutable specDefs to keep track of specification definitions bound to names (VariableExpression)
     // important remark: optimized version used *exclusively* used by
-    // function isContractive to check that terms are contractive,
+    // function 'isContractive' to check that terms are contractive,
     // hence no infinite loop can ever occur and no check for non termination is needed
-    fun hasEmptyTrace(expression: Expression): Boolean = when (expression) {
+    private fun hasEmptyTrace(expression: Expression): Boolean = when (expression) {
         is StarExpression -> true
         is PlusExpression -> hasEmptyTrace(expression.exp)
         is OptionalExpression -> true
@@ -41,19 +45,17 @@ object CalculusCompiler {
         EmptyExpression -> true
         AllExpression -> true
         is BlockExpression -> hasEmptyTrace(expression.expression)
-        is VariableExpression ->
-            hasEmptyTrace(specDefs.find{expression.id.equals(it.identifier)}?.expression?:
-            throw RuntimeException("Undefined identifier ${expression.id}"))
+        is VariableExpression -> hasEmptyTrace(getExpression(expression))
         is EventTypeExpression -> false
     }
 
-    // returns true iff the expression is contractive, uses function hasEmptyTrace
-    // a more efficient check could be implemented by merging hasEmptyTrace and isContractive together to avoid
+    // returns true iff the expression is contractive, uses function 'hasEmptyTrace'
+    // a more efficient check could be implemented by merging 'hasEmptyTrace' and 'isContractive' together to avoid
     // visiting the same tree twice
-    // 'path' is an arraylist which keeps track of the names (VariableExpression) of visited specifications
-    // loops must necessarily involve specification names
+    // 'path' is an arraylist which keeps track of the identifiers of the visited nodes of type 'VariableExpression'
+    // loops must necessarily involve specification names (that is, identifiers of nodes of type 'VariableExpression')
     // 'depth' is an index pointing to the deepest guarded name, -1 if none
-    fun isContractive(expression: Expression, depth:Int=-1): Boolean
+    private fun isContractive(expression: Expression, depth:Int=-1): Boolean
             = when (expression) {
         is StarExpression -> isContractive(expression.exp,depth)
         is PlusExpression -> isContractive(expression.exp,depth)
@@ -75,9 +77,17 @@ object CalculusCompiler {
         EmptyExpression -> true
         AllExpression -> true
         is BlockExpression -> isContractive(expression.expression,depth)
-        is VariableExpression -> true
-            //hasEmptyTrace(specDefs.find{expression.id.equals(it.identifier)}?.expression?:
-            //throw RuntimeException("Undefined identifier ${expression.id}"))
+        is VariableExpression -> {
+            val index = path.indexOf(expression.id)
+            if(index<0)
+            { // variable not yet visited
+                path.add(expression.id) // adds the new visited variable identifier at the end of the path
+                val res = isContractive(getExpression(expression),depth)
+                path.removeAt(path.lastIndex) // removes the id of the visited variable from the path
+                res
+            }
+            else index<depth // loop found, checks whether the node is guarded
+        }
         is EventTypeExpression -> true
     }
 
