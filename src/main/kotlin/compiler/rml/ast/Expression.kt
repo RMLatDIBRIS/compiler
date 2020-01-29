@@ -35,7 +35,7 @@ data class BlockExpression(val declaredVariables: List<Identifier>, val expressi
 }
 
 // trace expression identifier with possibly generic arguments
-data class VariableExpression(val id: Identifier, val genericArguments: List<DataExpression>): Expression() {
+data class VariableExpression(val id: Identifier, val genericArguments: List<DataExpression> = listOf()): Expression() {
     // allow construction from String directly
     constructor(id: String, genericArguments: List<DataExpression>): this(Identifier(id), genericArguments)
 }

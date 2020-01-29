@@ -11,11 +11,16 @@ object CalculusCompiler {
     private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
     // immutable list of spec definitions, useful to avoid a second parameter in functions for static checking
-    private var specDefs = listOf<compiler.rml.ast.Equation>()
+    // used by hasEmptyTrace and isContractive
+    private lateinit var specDefs : List<compiler.rml.ast.Equation>
+
+    // array list used by isContractive
+    private lateinit var path : MutableList<Identifier>
 
     // returns true iff the expression denotes a set with the empty trace, computes the equivalent of E(t) in the
-    // trace calculus
-    // important remark: optimized version used *exclusively* to check that terms are contractive,
+    // trace calculus, uses immutable specDefs to keep track of specification definitions bound to names (VariableExpression)
+    // important remark: optimized version used *exclusively* used by
+    // function isContractive to check that terms are contractive,
     // hence no infinite loop can ever occur and no check for non termination is needed
     fun hasEmptyTrace(expression: Expression): Boolean = when (expression) {
         is StarExpression -> true
@@ -42,9 +47,46 @@ object CalculusCompiler {
         is EventTypeExpression -> false
     }
 
+    // returns true iff the expression is contractive, uses function hasEmptyTrace
+    // a more efficient check could be implemented by merging hasEmptyTrace and isContractive together to avoid
+    // visiting the same tree twice
+    // 'path' is an arraylist which keeps track of the names (VariableExpression) of visited specifications
+    // loops must necessarily involve specification names
+    // 'depth' is an index pointing to the deepest guarded name, -1 if none
+    fun isContractive(expression: Expression, depth:Int=-1): Boolean
+            = when (expression) {
+        is StarExpression -> isContractive(expression.exp,depth)
+        is PlusExpression -> isContractive(expression.exp,depth)
+        is OptionalExpression -> isContractive(expression.exp,depth)
+        is PrefixClosureExpression -> isContractive(expression.exp,depth)
+        // more compact form is ConcatExpression, is AndExpression, is ShuffleExpression -> ... does not work
+        // Unresolved reference: left/right
+        is ConcatExpression ->
+        isContractive(expression.left,depth) && // if expression.left does not contain the empty trace then this node is a guard for all nodes in the path
+            isContractive(expression.right,if(hasEmptyTrace(expression.left)) depth else path.size)
+        is AndExpression -> isContractive(expression.left,depth) && isContractive(expression.right,depth)
+        is ShuffleExpression -> isContractive(expression.left,depth) && isContractive(expression.right,depth)
+        is OrExpression -> isContractive(expression.left,depth) && isContractive(expression.right,depth)
+        is FilterExpression ->
+            isContractive(expression.filteredExpression,depth) && (expression.unfilteredExpression==null ||
+                    isContractive(expression.unfilteredExpression,depth))
+        is IfElseExpression -> // remark: this is an over-approximation, the check is static while E is dynamic
+            isContractive(expression.thenExpression,depth) && isContractive(expression.elseExpression,depth)
+        EmptyExpression -> true
+        AllExpression -> true
+        is BlockExpression -> isContractive(expression.expression,depth)
+        is VariableExpression -> true
+            //hasEmptyTrace(specDefs.find{expression.id.equals(it.identifier)}?.expression?:
+            //throw RuntimeException("Undefined identifier ${expression.id}"))
+        is EventTypeExpression -> true
+    }
+
     fun compile(specification: Specification): compiler.calculus.Specification<EventType, DataExpression> {
         assert(equations.isEmpty())
         specDefs = specification.equations
+        path=ArrayList()
+        if(!isContractive(VariableExpression(specification.mainIdentifier)))
+            throw RuntimeException("The specification is not contractive")
         equations = specification.equations.map { compile(it) }.toMutableList()
         val mainIdentifier = Identifier(specification.mainIdentifier.name)
         val result = Specification(equations, mainIdentifier)
