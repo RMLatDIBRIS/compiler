@@ -91,7 +91,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     val parentPredicates: List<Term> = when (declaration) {
         // generate a deep_subdict (matching) predicate for every pattern instantiation
         is DirectEventTypeDeclaration -> compile(declaration.eventExpression).map {
-            CompoundTerm("deep_subdict", it, eventVariable)
+            CompoundTerm("deep_subdict", eventVariable, it)
         }.toList()
 
         // generate a match predicate for every parent event type
