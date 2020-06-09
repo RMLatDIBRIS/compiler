@@ -22,6 +22,8 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
         EmptyExpression -> atom("eps")
         ZeroExpression -> IntTerm(0)
         OneExpression -> IntTerm(1)
+        is EventTypePattern ->  // June 2020, Davide, support for singleton event type patterns
+                eventTypeCompiler(expression.eventType)
         is PrefixExpression -> CompoundTerm(":",
                 eventTypeCompiler(expression.eventType),
                 compile(expression.expression))

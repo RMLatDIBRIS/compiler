@@ -158,6 +158,7 @@ object CalculusCompiler {
                 VariableExpression(expression.id.name)
             else
                 GenericApplication(VariableExpression(expression.id.name), expression.genericArguments)
-        is EventTypeExpression -> PrefixExpression(expression.eventType, compiler.calculus.EmptyExpression)
+        is EventTypeExpression -> // PrefixExpression(expression.eventType, compiler.calculus.EmptyExpression)
+            EventTypePattern(expression.eventType) // June 2020, Davide, support for singleton event type patterns
     }
 }

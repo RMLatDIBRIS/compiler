@@ -17,6 +17,9 @@ object EmptyExpression: Expression<Nothing, Nothing>()
 object ZeroExpression: Expression<Nothing, Nothing>()
 object OneExpression: Expression<Nothing, Nothing>()
 
+// June 2020, Davide, support for singleton event type patterns
+data class EventTypePattern<ET, DE>(val eventType: ET): Expression<ET,DE>()
+
 data class PrefixExpression<ET, DE>(val eventType: ET, val expression: Expression<ET, DE>): Expression<ET, DE>()
 
 // binary expressions
