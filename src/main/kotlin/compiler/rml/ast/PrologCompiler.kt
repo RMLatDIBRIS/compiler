@@ -2,6 +2,10 @@ package compiler.rml.ast
 
 import compiler.prolog.ast.*
 
+// June 2020, Davide: event type renaming to avoid name clashes in the Prolog translation
+fun renameEventType(name:String):String =
+        name+"_et"
+
 val directives: List<Directive> = listOf(
         // :- module('spec', [trace_expression/2, match/2]).
         Directive(CompoundTerm("module", atom("spec"), ListTerm(
@@ -34,7 +38,7 @@ fun compile(eventType: EventType): CompoundTerm {
         is EventType.Parameter.DataExpression -> compile(it.dataExpression)
     } }
 
-    return CompoundTerm(eventType.identifier.name, parameters)
+    return CompoundTerm(renameEventType(eventType.identifier.name), parameters)
 }
 
 // directly compile data expressions to Prolog
@@ -83,7 +87,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     // match(_event, eventType(X1, ..., XN))
     val eventVariable = VariableTerm(eventName)
     val eventTypeTerm = CompoundTerm(
-            declaration.eventType.identifier.name,
+            renameEventType(declaration.eventType.identifier.name),
             parameters.map { VariableTerm(it.variable.name.capitalize()) })
     val head = CompoundTerm("match", eventVariable, eventTypeTerm)
 
@@ -97,7 +101,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
 
         // generate a match predicate for every parent event type
         is DerivedEventTypeDeclaration -> declaration.parents.map { parentEventType ->
-            val parentTerm = CompoundTerm(parentEventType.identifier.name, parentEventType.parameters.map(::compile))
+            val parentTerm = CompoundTerm(renameEventType(parentEventType.identifier.name), parentEventType.parameters.map(::compile))
             CompoundTerm("match", eventVariable, parentTerm)
         }
     }
