@@ -5,7 +5,7 @@ grammar RML;
 
 // a specification is made up of event type declarations followed by equations
 // ignore unused warning: this is the entry point
-specification: eventTypeDeclaration* equation+ ;
+specification: eventTypeDeclaration* equation+ EOF;
 
 // either derive an event type from existing ones or define a eventExpression for JSON events
 eventTypeDeclaration: declared=evtype NOT? 'matches' parents+=evtype ('|' parents+=evtype)* ('with' dataExp)? ';' # derivedEvtypeDecl
