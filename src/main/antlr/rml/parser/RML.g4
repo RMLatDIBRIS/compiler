@@ -8,8 +8,8 @@ grammar RML;
 specification: eventTypeDeclaration* equation+ EOF;
 
 // either derive an event type from existing ones or define a eventExpression for JSON events
-eventTypeDeclaration: declared=evtype NOT? 'matches' parents+=evtype ('|' parents+=evtype)* ('with' dataExp)? ';' # derivedEvtypeDecl
-                    | evtype NOT? 'matches' eventExp ('with' dataExp)? ';' # directEvtypeDecl
+eventTypeDeclaration: declared=evtype NOT? MATCHES parents+=evtype ('|' parents+=evtype)* (WITH dataExp)? ';' # derivedEvtypeDecl
+                    | evtype NOT? MATCHES eventExp (WITH dataExp)? ';' # directEvtypeDecl
                     ;
 
 // event types are parametric
@@ -98,6 +98,8 @@ expId: UPPERCASE_ID ;
 
 // keywords (before identifiers)
 NOT: 'not' ;
+MATCHES: 'matches' ;
+WITH: 'with' ;
 BOOLEAN: 'false' | 'true' ;
 
 // identifiers
