@@ -52,10 +52,10 @@ exp: exp '*' # starExp
    | exp '\\/' exp # orExp
    | exp '|' exp # shufExp
    | evtype '>>' leftBranch=exp (':' rightBranch=exp)? # filterExp
-   | 'empty' # emptyExp
-   | 'all' # allExp
-   | '{' ('var'|'let') evtypeVar (',' evtypeVar)* ';' exp '}' # blockExp
-   | 'if' '(' dataExp ')' exp 'else' exp # ifElseExp
+   | EMPTY # emptyExp
+   | ALL # allExp
+   | '{' DEC evtypeVar (',' evtypeVar)* ';' exp '}' # blockExp
+   | IF '(' dataExp ')' exp ELSE exp # ifElseExp
    | expId ('<' dataExp (',' dataExp)* '>')? # varExp
    | evtype # evtypeExp
    | '(' exp ')' # parenExp
@@ -66,12 +66,12 @@ dataExp: BOOLEAN # boolDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
-       | 'abs' '(' dataExp ')' # absDataExp
-       | 'sin' '(' dataExp ')' # sinDataExp
-       | 'cos' '(' dataExp ')' # cosDataExp
-       | 'tan' '(' dataExp ')' # tanDataExp
-       | 'min' '(' dataExp ',' dataExp ')' # minDataExp
-       | 'max' '(' dataExp ',' dataExp ')' # maxDataExp
+       | ABS '(' dataExp ')' # absDataExp
+       | SIN '(' dataExp ')' # sinDataExp
+       | COS '(' dataExp ')' # cosDataExp
+       | TAN '(' dataExp ')' # tanDataExp
+       | MIN '(' dataExp ',' dataExp ')' # minDataExp
+       | MAX '(' dataExp ',' dataExp ')' # maxDataExp
        | dataExp '^' dataExp # expDataExp
        | '-' dataExp # minusDataExp
        | dataExp '*' dataExp # mulDataExp
@@ -100,6 +100,17 @@ expId: UPPERCASE_ID ;
 NOT: 'not' ;
 MATCHES: 'matches' ;
 WITH: 'with' ;
+EMPTY: 'empty' ;
+ALL: 'all' ;
+DEC: 'var'|'let' ;
+IF: 'if' ;
+ELSE: 'else' ;
+ABS: 'abs' ;
+SIN: 'sin' ;
+COS: 'cos' ;
+TAN: 'tan' ;
+MIN: 'min' ;
+MAX: 'max' ;
 BOOLEAN: 'false' | 'true' ;
 
 // identifiers
