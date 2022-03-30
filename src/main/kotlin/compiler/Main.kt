@@ -21,7 +21,8 @@ class Args(parser: ArgParser) {
 
 // see documentation https://github.com/xenomachina/kotlin-argparser
 fun main(args: Array<String>) {
-    try {
+    compile(System.`in`,System.out)
+/*    try {
         return mainBody {
             // define help message
             val help = DefaultHelpFormatter("By default the program reads from standard input and writes to standard output")
@@ -35,6 +36,7 @@ fun main(args: Array<String>) {
     } catch (e: FileNotFoundException) {
         System.err.println(e.message)
     }
+  */
 }
 
 fun compile(inputStream: InputStream, outputStream: OutputStream) {

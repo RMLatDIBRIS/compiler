@@ -64,6 +64,7 @@ exp: exp '*' # starExp
 
 // boolean/arithmetic expression
 dataExp: BOOLEAN # boolDataExp
+       | NULL # nullDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp

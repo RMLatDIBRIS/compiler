@@ -100,7 +100,7 @@ object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
             // non-null assertion needed to avoid warnings with nullable extension receiver
             BoolEventExpression(ctx.BOOLEAN().text!!.toBoolean())
 
-    override fun visitNullEventExp(ctx: BoolEventExpContext) = NullEventExpression
+    override fun visitNullEventExp(ctx: NullEventExpContext) = NullEventExpression
 
     override fun visitVarEventExp(ctx: VarEventExpContext) =
             VariableEventExpression(ctx.evtypeVar().LOWERCASE_ID().text)
@@ -190,6 +190,9 @@ object DataExpressionBuilder: NoDefaultVisitor<DataExpression>() {
     // non-null assertion needed to avoid warnings with nullable extension receiver
     override fun visitBoolDataExp(ctx: BoolDataExpContext) =
             BoolDataExpression(ctx.BOOLEAN().text!!.toBoolean())
+
+    override fun visitNullDataExp(ctx: NullDataExpContext) = NullDataExpression
+
     override fun visitIntDataExp(ctx: IntDataExpContext) =
             IntDataExpression(ctx.INT().text!!.toInt())
     override fun visitFloatDataExp(ctx: FloatDataExpContext) =
