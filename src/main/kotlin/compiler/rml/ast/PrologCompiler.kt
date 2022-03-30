@@ -44,6 +44,7 @@ fun compile(eventType: EventType): CompoundTerm {
 // directly compile data expressions to Prolog
 fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term = when (dataExpression) {
     is BoolDataExpression -> atom(dataExpression.boolean.toString())
+    is NullDataExpression -> atom("null")
     is IntDataExpression -> IntTerm(dataExpression.int)
     is FloatDataExpression -> FloatTerm(dataExpression.double)
     is VariableDataExpression ->
@@ -146,6 +147,7 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
         is IntEventExpression -> yield(IntTerm(eventExpression.number))
         is FloatEventExpression -> yield(FloatTerm(eventExpression.number))
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
+        is NullEventExpression -> yield(atom("null"))
         is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name.capitalize()))
         is ObjectEventExpression -> yieldAll(compile(eventExpression))
     }

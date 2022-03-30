@@ -29,6 +29,7 @@ eventExp: eventExp ('|' eventExp) # patternEventExp
         | INT # intEventExp
         | FLOAT # floatEventExp
         | BOOLEAN # boolEventExp
+	| NULL # nullEventExp
         | evtypeVar # varEventExp
         | '_' # ignoredEventExp
         ;
@@ -63,6 +64,7 @@ exp: exp '*' # starExp
 
 // boolean/arithmetic expression
 dataExp: BOOLEAN # boolDataExp
+       | NULL # nullDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
@@ -112,6 +114,7 @@ TAN: 'tan' ;
 MIN: 'min' ;
 MAX: 'max' ;
 BOOLEAN: 'false' | 'true' ;
+NULL: 'null' ;
 
 // identifiers
 UPPERCASE_ID: [A-Z] ID_CHAR* ;

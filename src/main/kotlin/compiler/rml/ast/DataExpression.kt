@@ -5,6 +5,7 @@ sealed class DataExpression
 
 // base cases
 data class BoolDataExpression(val boolean: Boolean): DataExpression()
+object NullDataExpression: DataExpression()
 data class IntDataExpression(val int: Int): DataExpression()
 data class FloatDataExpression(val double: Double): DataExpression()
 data class VariableDataExpression(val variable: Identifier): DataExpression() {
