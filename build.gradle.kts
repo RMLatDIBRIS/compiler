@@ -12,12 +12,12 @@ repositories {
 dependencies {
     antlr("org.antlr:antlr4:4.+")
     implementation(kotlin("stdlib-jdk8")) // Kotlin standard library (use Java 8 features)
-    compile("com.xenomachina:kotlin-argparser:2.0.7")
+    compileOnly("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
 }
 
 // Define the main class for the application
-application { mainClassName = "compiler.MainKt" }
+application {  mainClass.set("compiler.MainKt") }
 
 // make System.in reads blocking when using Gradle
 val run: JavaExec by tasks
