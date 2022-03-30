@@ -11,6 +11,7 @@ data class StringEventExpression(val string: String): EventExpression()
 data class IntEventExpression(val number: Int): EventExpression()
 data class FloatEventExpression(val number: Double): EventExpression()
 data class BoolEventExpression(val value: Boolean): EventExpression()
+data class NullEventExpression(): EventExpression()
 data class VariableEventExpression(val variable: Identifier): EventExpression() {
     // allow construction from String directly
     constructor(variable: String): this(Identifier(variable))
