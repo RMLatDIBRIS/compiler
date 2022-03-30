@@ -100,6 +100,8 @@ object EventExpressionBuilder: NoDefaultVisitor<EventExpression>() {
             // non-null assertion needed to avoid warnings with nullable extension receiver
             BoolEventExpression(ctx.BOOLEAN().text!!.toBoolean())
 
+    override fun visitNullEventExp(ctx: BoolEventExpContext) = NullEventExpression
+
     override fun visitVarEventExp(ctx: VarEventExpContext) =
             VariableEventExpression(ctx.evtypeVar().LOWERCASE_ID().text)
 
