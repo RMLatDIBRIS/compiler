@@ -12,7 +12,7 @@ repositories {
 dependencies {
     antlr("org.antlr:antlr4:4.+")
     implementation(kotlin("stdlib-jdk8")) // Kotlin standard library (use Java 8 features)
-    compileOnly("com.xenomachina:kotlin-argparser:2.0.7")
+    compile("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
 }
 
