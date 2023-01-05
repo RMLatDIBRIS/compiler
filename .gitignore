@@ -12,6 +12,8 @@ build
 
 # package file
 *.jar
+# but not the Gradle wrapper... that's needed to build
+!gradle/wrapper/gradle-wrapper.jar
 
 # virtual machine crash logs, see 
 http://www.java.com/en/download/help/error_hotspot.xml
