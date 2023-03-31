@@ -125,7 +125,8 @@ fragment ID_CHAR: [a-zA-Z0-9_] ;
 ELLIPSIS: '...' ;
 INT: [0-9]+ ;
 FLOAT: INT '.' INT ;
-STRING: '\'' [ a-zA-Z0-9_.]* '\'' ;
+STRING: ['] (~['\\]|'\\'[trn'\\])* ['] ;
+// STRING: '\'' (~[\'\\]|'\'['\'' '\'])* '\'' ;
 
 // things to ignore
 WHITESPACE: [ \t\r\n]+ -> skip ;
