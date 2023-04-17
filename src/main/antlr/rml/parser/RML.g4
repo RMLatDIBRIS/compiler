@@ -93,7 +93,9 @@ dataExp: BOOLEAN # boolDataExp
 
 // identifier classes (don't make them lexical, they will get priority over each other)
 evtypeId: LOWERCASE_ID ;
-fieldKey: LOWERCASE_ID ;
+fieldKey: LOWERCASE_ID # idFieldKey
+	  | STRING # stringFieldKey
+	  ;	  
 evtypeVar: LOWERCASE_ID ;
 expVar: LOWERCASE_ID ;
 expId: UPPERCASE_ID ;

@@ -271,6 +271,14 @@ fun buildEventType(ctx: EvtypeContext) = EventType(
 )
 
 fun buildField(ctx: FieldContext) = ObjectEventExpression.Field(
-        ctx.fieldKey().LOWERCASE_ID().text,
+        ctx.fieldKey().accept(FieldKeyBuilder),//ctx.fieldKey().FIELD_KEY().text,
         ctx.eventExp().accept(EventExpressionBuilder)
 )
+
+object FieldKeyBuilder : NoDefaultVisitor<String>() {
+    override fun visitIdFieldKey(ctx: IdFieldKeyContext) =
+            ctx.LOWERCASE_ID().text
+
+    override fun visitStringFieldKey(ctx: StringFieldKeyContext) =
+            ctx.STRING().text
+}
