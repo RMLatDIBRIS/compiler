@@ -38,9 +38,12 @@ class PrologCompiler(private val writer: BufferedWriter) {
         if (term.args.isEmpty() && term.functor.matches(Regex("[a-z]\\w*"))) {
             writer.write(term.functor)
         }
-        // if it's an atom just print it quoted
+        // just an atom
         else if (term.arity == 0) {
-            writer.write("'${term.functor}'")
+            if (term.functor.startsWith('\'') && term.functor.endsWith('\''))
+                writer.write(term.functor)
+            else
+                writer.write("'${term.functor}'")
         }
         // if functor is binary and not a word, print as infix
         else if (term.args.size == 2 && !term.functor.first().isLetter()) {
