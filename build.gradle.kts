@@ -2,7 +2,7 @@ plugins {
     java // Java support
     application // Executable JVM application support
     antlr // ANTLR parser generator
-    kotlin("jvm") version "1.3.31" // JVM target for Kotlin compiler
+    kotlin("jvm") version "1.9.20" // JVM target for Kotlin compiler
 }
 
 repositories {
@@ -12,7 +12,7 @@ repositories {
 dependencies {
     antlr("org.antlr:antlr4:4.+")
     implementation(kotlin("stdlib-jdk8")) // Kotlin standard library (use Java 8 features)
-    compile("com.xenomachina:kotlin-argparser:2.0.7")
+    implementation("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
 }
 
@@ -29,6 +29,10 @@ val jar: Jar by tasks
 jar.manifest { attributes["Main-Class"] = "compiler.MainKt" }
 // include dependencies (fat-JAR)
 jar.from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 tasks {
     // first generate ANTLR parser, then compile source code

@@ -1,6 +1,7 @@
 package compiler.rml.ast
 
 import compiler.prolog.ast.*
+import java.util.*
 
 // June 2020, Davide: event type renaming to avoid name clashes in the Prolog translation
 fun renameEventType(name:String):String =
@@ -49,7 +50,7 @@ fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term
     is FloatDataExpression -> FloatTerm(dataExpression.double)
     is VariableDataExpression ->
         if (wrapVariables) CompoundTerm("var", atom(dataExpression.variable.name))
-        else VariableTerm(dataExpression.variable.name.capitalize())
+        else VariableTerm(dataExpression.variable.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
     is MinusDataExpression -> CompoundTerm("-", compile(dataExpression.exp, wrapVariables))
     is AbsDataExpression -> CompoundTerm("abs", compile(dataExpression.exp, wrapVariables))
 
@@ -89,7 +90,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     val eventVariable = VariableTerm(eventName)
     val eventTypeTerm = CompoundTerm(
             renameEventType(declaration.eventType.identifier.name),
-            parameters.map { VariableTerm(it.variable.name.capitalize()) })
+            parameters.map { VariableTerm(it.variable.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }) })
     val head = CompoundTerm("match", eventVariable, eventTypeTerm)
 
     // generate a predicate for each parent event type or object pattern
@@ -130,7 +131,11 @@ private fun compile(parameter: EventType.Parameter): Term = when (parameter) {
             throw Exception("unexpected event pattern in parameter")
         result.single()
     }
-    is EventType.Parameter.Variable -> VariableTerm(parameter.variable.name.capitalize())
+    is EventType.Parameter.Variable -> VariableTerm(parameter.variable.name.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()
+        ) else it.toString()
+    })
 }
 
 private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence {
@@ -148,7 +153,11 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
         is FloatEventExpression -> yield(FloatTerm(eventExpression.number))
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
         is NullEventExpression -> yield(atom("null"))
-        is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name.capitalize()))
+        is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(
+                Locale.getDefault()
+            ) else it.toString()
+        }))
         is ObjectEventExpression -> yieldAll(compile(eventExpression))
     }
 }
