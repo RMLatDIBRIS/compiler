@@ -56,6 +56,7 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
         is StarExpression -> CompoundTerm("star", compile(expression.expression))
         is OptionalExpression -> CompoundTerm("optional", compile(expression.expression))
         is PlusExpression -> CompoundTerm("plus", compile(expression.expression))
+        is TimesExpression -> CompoundTerm("times",compile(expression.expression),dataExpressionCompiler(expression.num))
         is PrefixClosureExpression -> CompoundTerm("clos", compile(expression.expression))
         // because of Prolog operator precedence, ET>>T1;T2 is (ET>>T1);T2
         is FilterExpression -> CompoundTerm(";",

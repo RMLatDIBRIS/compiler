@@ -53,6 +53,7 @@ data class PlusExpression<ET, DE>(val expression: Expression<ET, DE>): Expressio
 
 data class PrefixClosureExpression<ET, DE>(val expression: Expression<ET, DE>): Expression<ET, DE>()
 
+data class TimesExpression<ET, DE>(val expression: Expression<ET, DE>, val num: DE): Expression<ET, DE>()
 data class FilterExpression<ET, DE>(val eventType: ET,
                                     val filteredExpression: Expression<ET, DE>,
                                     val unfilteredExpression: Expression<ET, DE>): Expression<ET, DE>()
