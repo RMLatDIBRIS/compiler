@@ -48,6 +48,7 @@ exp: exp '*' # starExp
    | exp '+' # plusExp
    | exp '?' # optionalExp
    | exp '!' # closureExp
+   | exp '{' dataExp '}' # timesExp
    | <assoc=right> exp exp # catExp
    | exp '/\\' exp # andExp
    | exp '\\/' exp # orExp

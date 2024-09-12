@@ -134,6 +134,10 @@ object ExpressionBuilder: NoDefaultVisitor<Expression>() {
     override fun visitClosureExp(ctx: ClosureExpContext) =
             PrefixClosureExpression(ctx.exp().accept(this))
 
+    override fun visitTimesExp(ctx: TimesExpContext) = TimesExpression(
+        ctx.exp().accept(this),
+        ctx.dataExp().accept(DataExpressionBuilder)
+    )
     override fun visitCatExp(ctx: CatExpContext) = ConcatExpression(
             ctx.exp(0).accept(this),
             ctx.exp(1).accept(this)

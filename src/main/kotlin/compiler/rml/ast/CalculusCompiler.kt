@@ -30,6 +30,7 @@ object CalculusCompiler {
         is StarExpression -> true
         is PlusExpression -> hasEmptyTrace(expression.exp)
         is OptionalExpression -> true
+        is TimesExpression -> hasEmptyTrace(expression.exp) || expression.num is IntDataExpression && expression.num.equals(IntDataExpression(0))
         is PrefixClosureExpression -> true
         // more compact form is ConcatExpression, is AndExpression, is ShuffleExpression -> ... does not work
         // Unresolved reference: left/right
@@ -60,6 +61,7 @@ object CalculusCompiler {
         is StarExpression -> isContractive(expression.exp,depth)
         is PlusExpression -> isContractive(expression.exp,depth)
         is OptionalExpression -> isContractive(expression.exp,depth)
+        is TimesExpression -> isContractive(expression.exp,depth)
         is PrefixClosureExpression -> isContractive(expression.exp,depth)
         // more compact form is ConcatExpression, is AndExpression, is ShuffleExpression -> ... does not work
         // Unresolved reference: left/right
@@ -125,6 +127,7 @@ object CalculusCompiler {
         is PlusExpression -> PlusExpression(compile(expression.exp))
         is OptionalExpression -> OptionalExpression(compile(expression.exp))
         is PrefixClosureExpression -> PrefixClosureExpression(compile(expression.exp))
+        is TimesExpression -> if(expression.num is IntDataExpression) TimesExpression(compile(expression.exp),expression.num) else throw RuntimeException("Expected an int literal argument for the times regex operator")
         is ConcatExpression -> ConcatenationExpression(compile(expression.left), compile(expression.right))
         is AndExpression -> AndExpression(compile(expression.left), compile(expression.right))
         is OrExpression -> OrExpression(compile(expression.left), compile(expression.right))

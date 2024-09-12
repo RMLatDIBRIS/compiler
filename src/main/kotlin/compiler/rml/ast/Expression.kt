@@ -8,6 +8,7 @@ data class PlusExpression(val exp: Expression): Expression()
 data class OptionalExpression(val exp: Expression): Expression()
 
 data class PrefixClosureExpression(val exp: Expression): Expression()
+data class TimesExpression(val exp: Expression, val num: DataExpression): Expression()
 
 // binary operators
 data class ConcatExpression(val left: Expression, val right: Expression): Expression()
